@@ -14,7 +14,6 @@ public class HealthSystem : MonoBehaviour
 
     [SerializeField] private HealthData healthData;
 
-    private int maxHealth;
     private int currentHealth;
 
     #endregion
@@ -23,8 +22,7 @@ public class HealthSystem : MonoBehaviour
 
     private void Awake()
     {
-        maxHealth = healthData.Health;
-        currentHealth = maxHealth;
+        currentHealth = healthData.Health;
     }
 
     private void OnEnable()
@@ -68,7 +66,7 @@ public class HealthSystem : MonoBehaviour
         // Question: is it better to make this a field? It won't change at runtime so it is useless to reassing it after every call to Regeneration Routine.
         WaitForSeconds delay = new WaitForSeconds(1f);
 
-        yield return new WaitUntil(() => currentHealth < maxHealth);
+        yield return new WaitUntil(() => currentHealth < healthData.Health);
 
         currentHealth++;
 
