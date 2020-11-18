@@ -5,7 +5,7 @@ public class LifeValue : MonoBehaviour
 {
     #region Private Fields
 
-    [SerializeField] private HealthData healthData;
+    [SerializeField] private HealthDataSO healthData;
 
     private Text lifeAmount;
     private int health;

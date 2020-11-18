@@ -12,7 +12,7 @@ public class HealthSystem : MonoBehaviour
 
     #region Private Fields
 
-    [SerializeField] private HealthData healthData;
+    [SerializeField] private HealthDataSO healthData;
 
     private int currentHealth;
 
@@ -63,7 +63,7 @@ public class HealthSystem : MonoBehaviour
 
     private IEnumerator RegenerationRoutine()
     {
-        // Question: is it better to make this a field? It won't change at runtime so it is useless to reassing it after every call to Regeneration Routine.
+        // Does this allocate and deallocate memory each iteration?
         WaitForSeconds delay = new WaitForSeconds(1f);
 
         yield return new WaitUntil(() => currentHealth < healthData.Health);
@@ -74,11 +74,9 @@ public class HealthSystem : MonoBehaviour
 
         yield return delay;
 
-        Coroutine regenerationRoutine = StartCoroutine(RegenerationRoutine());
-
-        if (currentHealth == 0)
+        if (currentHealth != 0)
         {
-            StopCoroutine(regenerationRoutine);
+            StartCoroutine(RegenerationRoutine());
         }
     }
 
