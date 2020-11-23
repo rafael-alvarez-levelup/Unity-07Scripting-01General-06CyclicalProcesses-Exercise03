@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class LifeValue : MonoBehaviour
+public class HealthView : MonoBehaviour
 {
     #region Private Fields
 
@@ -24,12 +24,12 @@ public class LifeValue : MonoBehaviour
 
     private void OnEnable()
     {
-        HealthSystem.OnHealthChanged += UpdateLifeAmount;
+        HealthBehaviour.OnChanged += UpdateLifeAmount;
     }
 
     private void OnDisable()
     {
-        HealthSystem.OnHealthChanged -= UpdateLifeAmount;
+        HealthBehaviour.OnChanged -= UpdateLifeAmount;
     }
 
     #endregion

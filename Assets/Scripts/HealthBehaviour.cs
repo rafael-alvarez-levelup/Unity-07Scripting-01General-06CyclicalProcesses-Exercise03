@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class HealthSystem : MonoBehaviour
+public class HealthBehaviour : MonoBehaviour
 {
     #region Events
 
     public delegate void HealthChangedEventHandler(int value);
-    public static event HealthChangedEventHandler OnHealthChanged;
+    public static event HealthChangedEventHandler OnChanged;
 
     #endregion
 
@@ -15,6 +15,8 @@ public class HealthSystem : MonoBehaviour
     [SerializeField] private HealthDataSO healthData;
 
     private int currentHealth;
+    private WaitForSeconds delay;
+    private WaitUntil isDamagedDelay;
 
     #endregion
 
@@ -25,52 +27,45 @@ public class HealthSystem : MonoBehaviour
         currentHealth = healthData.Health;
     }
 
-    private void OnEnable()
-    {
-        DamageButton.OnClicked += TakeDamage;
-    }
-
     private void Start()
     {
-        StartCoroutine(RegenerationRoutine());
-    }
+        delay = new WaitForSeconds(1f);
+        isDamagedDelay = new WaitUntil(() => currentHealth < healthData.Health);
 
-    private void OnDisable()
-    {
-        DamageButton.OnClicked -= TakeDamage;
+        StartCoroutine(RegenerationRoutine());
     }
 
     #endregion
 
     #region Private Methods
 
-    private void TakeDamage(int damageAmount)
+    public void TakeDamage(int damageAmount)
     {
         currentHealth -= damageAmount;
 
         if (currentHealth <= 0)
         {
             currentHealth = 0;
-
-            DamageButton.OnClicked -= TakeDamage;
         }
 
-        if (OnHealthChanged != null)
+        HealthChanged();
+    }
+
+    private void HealthChanged()
+    {
+        if (OnChanged != null)
         {
-            OnHealthChanged(currentHealth);
+            OnChanged(currentHealth);
         }
     }
 
     private IEnumerator RegenerationRoutine()
     {
-        // Does this allocate and deallocate memory each iteration?
-        WaitForSeconds delay = new WaitForSeconds(1f);
-
-        yield return new WaitUntil(() => currentHealth < healthData.Health);
+        yield return isDamagedDelay;
 
         currentHealth++;
 
-        OnHealthChanged(currentHealth);
+        HealthChanged();
 
         yield return delay;
 
